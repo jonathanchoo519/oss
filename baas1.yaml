@@ -1,0 +1,129 @@
+## GM 不托管
+
+# ConfigType 1:创建网络 2.加入网络
+config_type: 1
+
+k8s_config:
+  k8s_yaml: |
+    apiVersion: v1
+    kind: Config
+    clusters:
+    - cluster:
+        api-version: v1
+        insecure-skip-tls-verify: true
+        server: "https://192.168.10.30:8080/r/projects/1a7/kubernetes:6443"
+      name: "yunphant"
+    contexts:
+    - context:
+        cluster: "yunphant"
+        user: "yunphant"
+      name: "yunphant"
+    current-context: "yunphant"
+    users:
+    - name: "yunphant"
+      user:
+        token: "QmFzaWMgUkRaQ1JqVXdSVGcxTjBFMU5VTkJRVGRET0VNNlNtOXVTMDFCWWtjeVIyMXpVVGswVUZnMk9VczRPRXhZVmxWdGMxbFdhWEV5VG5GRVYyWm9NZz09"
+
+  endpoints: [192.168.10.30,192.168.10.31]
+  cluster_helper_port: 31001
+  k8s_namespace: baas1
+  available_resources_switch: false
+  pv:
+  pvc:
+  sc:
+  pvc_resources_storage: 50
+
+#net config
+net_config:
+  net_name: net1
+  net_alias: net1
+  org_name: baas1
+  org_full_name: baas1
+  consensus: etcdraft
+
+  volume:
+    volume: nfs
+    nfs_host: 192.168.10.31
+    nfs_share_dir: /home/centos/nfs_data
+
+  peer_orderer_log_switch: false
+  peer_orderer_log_path:
+  # info/debug/error
+  peer_log_level: info
+  orderer_log_level: info
+  batch:
+    batch_timeout: 2
+    max_message_count: 10
+    absolute_max_bytes: 104857600
+    preferred_max_bytes: 524288
+
+  block_dump:
+    block_dump_switch: true
+    block_max_file_limit: 10
+    # 支持多个定时任务，以逗号分割
+    block_dump_corn: 0 */5 * * * ?
+    block_dump_interval: 24
+    block_load_retry_times: 5
+
+  ca_server:
+    ca_type: fabric-ca
+    # 这里记得带http前缀
+    ca_address: http://192.168.10.30
+    ca_port: 30054
+    ca_user: admin4
+    ca_pwd: adminpw4
+
+  key_escrow:
+    enable: false
+    # 加密算法类型 0.SW 1.GM
+    gm: 1
+    # 托管类型 1.天安 2.信安 3.SoftHSM
+    type: 
+    # 加密标准 1.PKCS11 2.SDF
+    standard:
+    library:
+    label:
+    pin:
+    ip:
+    port:
+    password:
+
+
+#node_config
+node_config:
+  image:
+    repository_switch: true
+    docker_repository: 192.168.9.68:80
+    images_tag: yunchain-v2.2.3
+    # ccenv_image: hyperledger/yunchain-ccenv:v2.2.3-beta2-yx
+    # orderer_image: hyperledger/yunchain-orderer:v2.2.3-beta2-yx
+    # peer_image: 192.168.9.68:80/hyperledger/yunchain-peer:v2.2.3-beta2-yx
+    # baseOS_image: 192.168.9.68:80/hyperledger/yunchain-baseos:v2.2.3-beta2-yx
+    # javaenv_image: 192.168.9.68:80/hyperledger/yunchain-javaenv:v2.2.3-beta2-yx
+    # couchDB_image: 192.168.9.68:80/hyperledger/yunchain-couchdb:v2.2.3-beta2-yx
+  peers:
+    - peer_port: 30001
+      chaincode_port: 30002
+      peer_control_port: 30003
+      couchDB_switch: false
+    - peer_port: 30004
+      chaincode_port: 30005
+      peer_control_port: 30006
+      couchDB_switch: false
+  orderers:
+    - orderer_port: 30007
+      orderer_control_port: 30008
+    - orderer_port: 30009
+      orderer_control_port: 30010
+    - orderer_port: 30011
+      orderer_control_port: 30012
+  cross_network:
+    # 记得带端口号
+    # cross_network_orderers:
+    #   - from: orderer-0-certbaas2gm:7050
+    #     to: 192.168.9.46:30120
+    # cross_network_peers:
+    #   - from: peer-0-certbaas2gm:7051
+    #     to: 192.168.9.46:30131
+    #   - from: peer-1-certbaas2gm:7051
+    #     to: 192.168.9.46:30133
